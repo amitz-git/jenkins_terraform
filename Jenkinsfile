@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/amitz-git/jenkins.git'
+                git branch: 'main', url: 'https://github.com/amitz-git/test.git'
             }
         }
         stage('Terraform init') {
