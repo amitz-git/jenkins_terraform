@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent terraform
 
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/amitz-git/test.git'
+                git branch: 'main', url: 'https://github.com/amitz-git/jenkins_terraform.git'
             }
         }
         stage('Terraform init') {
