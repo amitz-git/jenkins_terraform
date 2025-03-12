@@ -1,5 +1,5 @@
 pipeline {
-    agent terraform
+    agent { label 'terraform' }  // Ensure a Terraform-capable agent is used
 
     parameters {
         booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
@@ -7,8 +7,7 @@ pipeline {
     }
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        AWS_REGION            = 'us-east-1'  // Set the default AWS region
     }
 
     stages {
@@ -17,11 +16,19 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/amitz-git/jenkins_terraform.git'
             }
         }
-        stage('Terraform init') {
+
+        stage('Terraform Init') {
             steps {
                 sh 'terraform init'
             }
         }
+
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+
         stage('Plan') {
             when {
                 expression { params.action == 'apply' }
@@ -29,8 +36,10 @@ pipeline {
             steps {
                 sh 'terraform plan -out=tfplan'
                 sh 'terraform show -no-color tfplan > tfplan.txt'
+                archiveArtifacts artifacts: 'tfplan.txt', fingerprint: true
             }
         }
+
         stage('Apply / Destroy') {
             steps {
                 script {
