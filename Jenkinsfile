@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        AWS_REGION            = 'us-east-1'  // Set the default AWS region
+        AWS_REGION            = 'ap-south-2'  // Set the default AWS region
     }
 
     stages {
